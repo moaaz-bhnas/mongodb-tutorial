@@ -133,6 +133,9 @@ const users = [
 /* --- Find all users whose favorite anime is "Hunter x Hunter" --- */
 db.users.find({ "favAnimes.name": "Hunter x Hunter" });
 
+/* --- Find all users whose favorite genres include "Drama" / "Slice of Life" --- */
+db.users.find({ favGenres: { $in: ["Slice of Life", "Drama"] } });
+
 /* --- Find all users with exactly 3 favorite animes --- */
 db.users.find({ favAnimes: { $size: 3 } });
 
