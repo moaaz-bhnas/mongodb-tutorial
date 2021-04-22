@@ -44,5 +44,40 @@ db.places.find({
 });
 /* 
   - An area is represented by a polygon on the map
+  - Coordinates for an area is [[[], [], []]] 
   - End with first point to state the end of the polygon
+*/
+
+// e) Finding out if a user is in a specific area
+// 1st create the area
+db.areas.insertOne({
+  name: "neighborhood",
+  location: { type: "Polygon", coordinates: [[p1, p2, p3, p4, p1]] },
+});
+// 2nd the index
+db.areas.createIndex({ area: "2dsphere" });
+// 3rd Find area that "intersects" with the user's location
+db.areas.find({
+  area: {
+    $geoIntersects: {
+      $geometry: { type: "Point", coordinates: [47.97751, 29.28312] },
+    },
+  },
+});
+/* 
+  - $geoIntersects: Area that intersects with a point. Not $geoWithin as areas can't be within points
+  - You can find areas that intersects with a certain area too
+*/
+
+// f) Finding places within a certain radius
+db.places.find({
+  location: {
+    $geoWithin: { $centerSphere: [[47.9668434, 29.2892809], 2 / 6378.1] },
+  },
+});
+/* 
+  - Docs are not sorted unlike $near
+  - $centerSphere: takes 2 arguments:
+    * center point array
+    * radius: https://docs.mongodb.com/manual/tutorial/calculate-distances-using-spherical-geometry-with-2d-geospatial-indexes/
 */
